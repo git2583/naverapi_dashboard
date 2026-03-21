@@ -1,5 +1,6 @@
 import urllib.request
 import urllib.error
+import urllib.parse
 import json
 import logging
 from config.api_env import APIConfig
@@ -50,3 +51,22 @@ class NaverAPIClient:
         except Exception as e:
             logging.error(f"알 수 없는 통신 오류: {e}")
             raise e
+
+    def fetch_search_results(self, node: str, keyword: str, start: int = 1, display: int = 10) -> dict:
+        """네이버 검색 API(블로그, 카페, 뉴스, 쇼핑)를 호출합니다."""
+        if not APIConfig.CLIENT_ID or not APIConfig.CLIENT_SECRET:
+            raise ValueError("API 자격 증명이 누락되었습니다.")
+            
+        url = f"https://openapi.naver.com/v1/search/{node}.json?query={urllib.parse.quote(keyword)}&start={start}&display={display}"
+        req = urllib.request.Request(url)
+        for key, value in self.headers.items():
+            req.add_header(key, value)
+            
+        try:
+            response = urllib.request.urlopen(req)
+            if response.getcode() == 200:
+                return json.loads(response.read().decode('utf-8'))
+            return {}
+        except Exception as e:
+            logging.error(f"Search API 통신 오류 ({node}): {e}")
+            return {}
