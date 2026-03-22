@@ -1,0 +1,20 @@
+# Environments
+.env
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDEs
+.vscode/
+
+# Data and logs
+*.csv
+*.log
+data/
